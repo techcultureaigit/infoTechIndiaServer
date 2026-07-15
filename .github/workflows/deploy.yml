@@ -8,18 +8,25 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Connect & deploy on droplet
+      - name: Connect & deploy on server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.DO_HOST }}
           username: ${{ secrets.DO_SSH_USER }}
           key: ${{ secrets.DO_SSH_KEY }}
+
           script: |
             set -e
-            cd /var/www/server
+
+            cd /var/www/infotech/infoTechIndiaServer
+
             git fetch --all
             git reset --hard origin/master
-            pnpm install --frozen-lockfile
-            pm2 restart server || pm2 start npm --name server -- run dev
+
+            npm install
+
+            pm2 restart infotech-backend || pm2 start npm --name infotech-backend -- start
+
             pm2 save
